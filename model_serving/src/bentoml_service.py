@@ -34,14 +34,41 @@ def save_model() -> bentoml.Model:
     model_uri = registered_model_dict["_source"]
 
     mlflow.set_tracking_uri(config.mlflow_tracking_uri)
-    mlflow_model = mlflow.pyfunc.load_model(model_uri=model_uri)
+    # print("uri: ", model_uri)
+    # mlflow_model = mlflow.pyfunc.load_model(model_uri=model_uri)
+    mlflow_model = mlflow.sklearn.load_model(model_uri=model_uri)
+    
+    # # load data
+    # batch_df = load_df(AppPath.BATCH_INPUT_PQ)
+
+    # # restructure features
+    # model_signature: ModelSignature = mlflow_model.metadata.signature
+    # feature_list = []
+    # for name in model_signature.inputs.input_names():
+    #     feature_list.append(name)
+    # Log().log.info(f"feature_list: {feature_list}")
+
+    # batch_df = batch_df[feature_list]
+    # Log().log.info(f"batch_df: {batch_df}")
+
+    # # Predict
+    # preds = mlflow_model.predict(batch_df)
+    # batch_df["pred"] = preds
+
+    # Log().log.info("----- Example output -----")
+    # Log().log.info(batch_df.head())
+
+
     Log().log.info(mlflow_model.__dict__)
-    model = mlflow_model._model_impl
-    model_signature: ModelSignature = mlflow_model.metadata.signature
+    model = mlflow_model
+    # print("type: ", type(model))
+    # model_signature: ModelSignature = mlflow_model.metadata.signature
 
     # construct feature list
     feature_list = []
-    for name in model_signature.inputs.input_names():
+    # for name in model_signature.inputs.input_names():
+    #     feature_list.append(name)
+    for name in mlflow_model.feature_names_in_:
         feature_list.append(name)
 
     # save model using bentoml

@@ -29,6 +29,9 @@ if [[ -z "$cmd" ]]; then
     exit 1
 fi
 
+# echo $DOCKER_USER/$PROJECT/$IMAGE_NAME:$IMAGE_TAG
+# echo "nhut"
+
 build() {
     docker build --tag $DOCKER_USER/$PROJECT/$IMAGE_NAME:$IMAGE_TAG -f deployment/Dockerfile .
     docker tag $DOCKER_USER/$PROJECT/$IMAGE_NAME:$IMAGE_TAG $DOCKER_USER/$PROJECT/$IMAGE_NAME:latest
